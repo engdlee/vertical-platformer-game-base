@@ -1,7 +1,9 @@
 {
   "name": "vertical-platformer-game-base",
+  "version": "1.0.0",
+  "description": "Vertical Platformer Game Base TS",
+  "main": "main.js",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,5 +13,21 @@
   "devDependencies": {
     "typescript": "^4.9.3",
     "vite": "^4.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/engdlee/vertical-platformer-game-base.git"
+  },
+  "keywords": [
+    "Game",
+    "Typescript",
+    "2D",
+    "Platformer"
+  ],
+  "author": "David Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engdlee/vertical-platformer-game-base/issues"
+  },
+  "homepage": "https://github.com/engdlee/vertical-platformer-game-base#readme"
 }
