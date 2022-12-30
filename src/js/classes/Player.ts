@@ -2,12 +2,13 @@ import { Position, Velocity } from "../interfaces/interfaces";
 import { collision } from "../utils";
 import { CanvasContext } from "./CanvasContext";
 import { CollisionBlock } from "./CollisionBlock";
+import { Sprite } from "./Sprite";
 
-export class Player {
+export class Player extends Sprite {
   position: Position;
   velocity: Velocity;
-  width: number;
-  height: number;
+  //   width: number;
+  //   height: number;
   collisionBlocks: CollisionBlock[];
 
   canvasContext = CanvasContext.getInstance();
@@ -15,20 +16,40 @@ export class Player {
   c = this.canvasContext.c;
   gravity = this.canvasContext.gravity;
 
-  constructor(position: Position, collisionBlocks: CollisionBlock[]) {
+  constructor(
+    position: Position,
+    collisionBlocks: CollisionBlock[],
+    imageSrc: string,
+    frameRate: number,
+    scale = 0.5
+  ) {
+    super({ position, imageSrc, frameRate, scale });
     this.position = position;
     this.velocity = {
       x: 0,
       y: 1,
     };
-    this.width = 25;
-    this.height = 25;
+    // this.width = 25;
+    // this.height = 25;
     this.collisionBlocks = collisionBlocks;
   }
 
-  draw() {
+  //   draw() {
+  //     if (this.c) {
+  //       this.c.fillStyle = "red";
+  //       this.c.fillRect(
+  //         this.position.x,
+  //         this.position.y,
+  //         this.width,
+  //         this.height
+  //       );
+  //     }
+  //   }
+
+  update() {
+    this.updateFrames();
     if (this.c) {
-      this.c.fillStyle = "red";
+      this.c.fillStyle = "rgba(0, 255, 0, 0.2)";
       this.c.fillRect(
         this.position.x,
         this.position.y,
@@ -36,9 +57,6 @@ export class Player {
         this.height
       );
     }
-  }
-
-  update() {
     this.draw();
     this.position.x += this.velocity.x;
     this.checkForHorizontalCollisions(); // before gravity

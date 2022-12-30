@@ -59,7 +59,12 @@ platformCollisions2D.forEach((row, y) => {
   });
 });
 
-const player = new Player({ x: 100, y: 0 }, collisionBlocks);
+const player = new Player(
+  { x: 100, y: 0 },
+  collisionBlocks,
+  "./img/warrior/Idle.png",
+  8
+);
 // const player2 = new Player({ x: 0, y: 0 });
 
 const keys = {

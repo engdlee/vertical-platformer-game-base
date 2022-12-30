@@ -9,6 +9,9 @@ export interface Velocity extends Position {}
 export interface ISprite {
   position: Position;
   imageSrc: string;
+  frameRate?: number;
+  frameBuffer?: number;
+  scale?: number;
 }
 
 export interface IPlayer {
