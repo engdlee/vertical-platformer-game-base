@@ -6,7 +6,7 @@ export class CanvasContext {
   private static instance: CanvasContext;
   canvas: HTMLCanvasElement | null;
   c: CanvasRenderingContext2D | null | undefined;
-  gravity = 0.5;
+  gravity = 0.1;
 
   /**
    * The CanvasContext's constructor should always be private to prevent direct

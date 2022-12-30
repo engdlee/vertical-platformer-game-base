@@ -11,10 +11,10 @@ export class CollisionBlock {
   c = this.canvasContext.c;
   gravity = this.canvasContext.gravity;
 
-  constructor(position: Position) {
+  constructor(position: Position, height: number = 16) {
     this.position = position;
     this.width = 16;
-    this.height = 16;
+    this.height = height;
   }
 
   draw() {

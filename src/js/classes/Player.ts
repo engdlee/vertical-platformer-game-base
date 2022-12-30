@@ -4,7 +4,7 @@ import {
   Position,
   Velocity,
 } from "../interfaces/interfaces";
-import { collision } from "../utils";
+import { collision, platformcollision } from "../utils";
 import { CanvasContext } from "./CanvasContext";
 import { CollisionBlock } from "./CollisionBlock";
 import { Sprite } from "./Sprite";
@@ -13,6 +13,7 @@ export class Player extends Sprite {
   position: Position;
   velocity: Velocity;
   collisionBlocks: CollisionBlock[];
+  platformCollisionBlocks: CollisionBlock[];
   hitbox: IObject;
   animations: IAnimations;
   lastDirection: string;
@@ -25,6 +26,7 @@ export class Player extends Sprite {
   constructor(
     position: Position,
     collisionBlocks: CollisionBlock[],
+    platformCollisionBlocks: CollisionBlock[],
     imageSrc: string,
     frameRate: number,
     animations: IAnimations,
@@ -38,6 +40,7 @@ export class Player extends Sprite {
     };
 
     this.collisionBlocks = collisionBlocks;
+    this.platformCollisionBlocks = platformCollisionBlocks;
     this.hitbox = {
       position: {
         x: this.position.x,
@@ -180,6 +183,20 @@ export class Player extends Sprite {
 
           this.position.y =
             collisionBlock.position.y + collisionBlock.height - offset + 0.01;
+          break;
+        }
+      }
+    }
+
+    // platform collision block
+    for (let i = 0; i < this.platformCollisionBlocks.length; i++) {
+      const platformCollisionBlock = this.platformCollisionBlocks[i];
+      if (platformcollision(this.hitbox, platformCollisionBlock)) {
+        if (this.velocity.y > 0) {
+          this.velocity.y = 0;
+          const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height;
+          this.position.y = platformCollisionBlock.position.y - offset - 0.01;
           break;
         }
       }

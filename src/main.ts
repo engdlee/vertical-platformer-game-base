@@ -50,10 +50,13 @@ platformCollisions2D.forEach((row, y) => {
     if (symbol === 202) {
       console.log("draw a block here!");
       platformCollisionBlocks.push(
-        new CollisionBlock({
-          x: x * 16,
-          y: y * 16,
-        })
+        new CollisionBlock(
+          {
+            x: x * 16,
+            y: y * 16,
+          },
+          4
+        )
       );
     }
   });
@@ -62,6 +65,7 @@ platformCollisions2D.forEach((row, y) => {
 const player = new Player(
   { x: 100, y: 0 },
   collisionBlocks,
+  platformCollisionBlocks,
   "./img/warrior/Idle.png",
   8,
   {
@@ -194,7 +198,7 @@ window.addEventListener("keydown", (event) => {
       keys.a.pressed = true;
       break;
     case "w":
-      player.velocity.y = -8;
+      player.velocity.y = -4;
       break;
   }
 });
