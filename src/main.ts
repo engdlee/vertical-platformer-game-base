@@ -63,7 +63,7 @@ platformCollisions2D.forEach((row, y) => {
 });
 
 const player = new Player(
-  { x: 100, y: 0 },
+  { x: 50, y: 0 },
   collisionBlocks,
   platformCollisionBlocks,
   "./img/warrior/Idle.png",
@@ -130,6 +130,13 @@ const background = new Sprite({
   imageSrc: "./img/background.png",
 });
 
+const camera = {
+  position: {
+    x: 0,
+    y: 0,
+  },
+};
+
 function animate() {
   window.requestAnimationFrame(animate);
   if (c && canvas) {
@@ -139,7 +146,10 @@ function animate() {
     c.save();
     c.scale(4, 4);
     if (background.image) {
-      c.translate(0, -background.image.height + scaledCanvas.height);
+      c.translate(
+        camera.position.x,
+        -background.image.height + scaledCanvas.height
+      );
     }
     background.update();
     collisionBlocks.forEach((collisionBlock) => {
@@ -149,17 +159,20 @@ function animate() {
       block.update();
     });
 
+    player.checkForHorizontalCanvasCollision();
     player.update();
-    player.velocity.x = 0;
 
+    player.velocity.x = 0;
     if (keys.d.pressed) {
       player.switchSprite("Run");
       player.velocity.x = 2;
       player.lastDirection = "right";
+      player.shouldPanCameraToTheLeft(canvas, camera);
     } else if (keys.a.pressed) {
       player.switchSprite("RunLeft");
       player.velocity.x = -2;
       player.lastDirection = "left";
+      player.shouldPanCameraToTheRight(camera);
     } else if (player.velocity.y === 0) {
       if (player.lastDirection === "right") {
         player.switchSprite("Idle");

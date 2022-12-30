@@ -17,6 +17,7 @@ export class Player extends Sprite {
   hitbox: IObject;
   animations: IAnimations;
   lastDirection: string;
+  camerabox: IObject;
 
   canvasContext = CanvasContext.getInstance();
   canvas = this.canvasContext.canvas;
@@ -60,6 +61,15 @@ export class Player extends Sprite {
 
       this.animations[key as keyof typeof this.animations].image = image;
     }
+
+    this.camerabox = {
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      width: 200,
+      height: 80,
+    };
   }
 
   switchSprite(key: string) {
@@ -80,12 +90,71 @@ export class Player extends Sprite {
     }
   }
 
+  updateCamerabox() {
+    this.camerabox = {
+      position: {
+        x: this.position.x - 50,
+        y: this.position.y,
+      },
+      width: 200,
+      height: 80,
+    };
+  }
+
+  checkForHorizontalCanvasCollision() {
+    if (
+      this.hitbox.position.x + this.hitbox.width + this.velocity.x >= 576 ||
+      this.hitbox.position.x + this.velocity.x <= 0
+    ) {
+      this.velocity.x = 0;
+    }
+  }
+  shouldPanCameraToTheLeft(
+    canvas: HTMLCanvasElement,
+    camera: { position: Position }
+  ) {
+    const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width;
+    const scaledDownCanvasWidth = canvas.width / 4;
+
+    if (cameraboxRightSide >= 576) {
+      return;
+    }
+
+    if (
+      cameraboxRightSide >=
+      scaledDownCanvasWidth + Math.abs(camera.position.x)
+    ) {
+      camera.position.x -= this.velocity.x;
+    }
+  }
+
+  shouldPanCameraToTheRight(camera: { position: Position }) {
+    if (this.camerabox.position.x <= 0) {
+      return;
+    }
+
+    if (this.camerabox.position.x <= Math.abs(camera.position.x)) {
+      camera.position.x -= this.velocity.x;
+    }
+  }
+
   update() {
     this.updateFrames();
     this.updateHitbox();
 
+    this.updateCamerabox();
+
     //for debugging
     if (this.c) {
+      // draws the camera
+      this.c.fillStyle = "rgba(0, 0, 255, 0.2)";
+      this.c.fillRect(
+        this.camerabox.position.x,
+        this.camerabox.position.y,
+        this.camerabox.width,
+        this.camerabox.height
+      );
+
       // draws the image
       this.c.fillStyle = "rgba(0, 255, 0, 0.2)";
       this.c.fillRect(
