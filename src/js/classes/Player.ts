@@ -1,4 +1,4 @@
-import { Position, Velocity } from "../interfaces/interfaces";
+import { IObject, Position, Velocity } from "../interfaces/interfaces";
 import { collision } from "../utils";
 import { CanvasContext } from "./CanvasContext";
 import { CollisionBlock } from "./CollisionBlock";
@@ -7,9 +7,8 @@ import { Sprite } from "./Sprite";
 export class Player extends Sprite {
   position: Position;
   velocity: Velocity;
-  //   width: number;
-  //   height: number;
   collisionBlocks: CollisionBlock[];
+  hitbox: IObject;
 
   canvasContext = CanvasContext.getInstance();
   canvas = this.canvasContext.canvas;
@@ -29,26 +28,23 @@ export class Player extends Sprite {
       x: 0,
       y: 1,
     };
-    // this.width = 25;
-    // this.height = 25;
-    this.collisionBlocks = collisionBlocks;
-  }
 
-  //   draw() {
-  //     if (this.c) {
-  //       this.c.fillStyle = "red";
-  //       this.c.fillRect(
-  //         this.position.x,
-  //         this.position.y,
-  //         this.width,
-  //         this.height
-  //       );
-  //     }
-  //   }
+    this.collisionBlocks = collisionBlocks;
+    this.hitbox = {
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      width: 10,
+      height: 10,
+    };
+  }
 
   update() {
     this.updateFrames();
+    this.updateHitbox();
     if (this.c) {
+      // draws the image
       this.c.fillStyle = "rgba(0, 255, 0, 0.2)";
       this.c.fillRect(
         this.position.x,
@@ -56,28 +52,64 @@ export class Player extends Sprite {
         this.width,
         this.height
       );
+
+      // draws the hibox
+      this.c.fillStyle = "rgba(255, 0, 0, 0.2)";
+      this.c.fillRect(
+        this.hitbox.position.x,
+        this.hitbox.position.y,
+        this.hitbox.width,
+        this.hitbox.height
+      );
     }
     this.draw();
     this.position.x += this.velocity.x;
+    this.updateHitbox();
     this.checkForHorizontalCollisions(); // before gravity
     this.applyGravity();
+    this.updateHitbox();
     this.checkForVerticalCollisions();
+  }
+
+  hitboxDimensions = {
+    position: {
+      x: 35,
+      y: 26,
+    },
+    width: 14,
+    height: 27,
+  };
+
+  updateHitbox() {
+    this.hitbox = {
+      position: {
+        x: this.position.x + this.hitboxDimensions.position.x,
+        y: this.position.y + this.hitboxDimensions.position.y,
+      },
+      width: this.hitboxDimensions.width,
+      height: this.hitboxDimensions.height,
+    };
   }
 
   checkForHorizontalCollisions() {
     for (let i = 0; i < this.collisionBlocks.length; i++) {
       const collisionBlock = this.collisionBlocks[i];
-      if (collision(this, collisionBlock)) {
+      if (collision(this.hitbox, collisionBlock)) {
         if (this.velocity.x > 0) {
           this.velocity.x = 0;
-          this.position.x = collisionBlock.position.x - this.width - 0.01;
+
+          const offset =
+            this.hitbox.position.x - this.position.x + this.hitbox.width;
+
+          this.position.x = collisionBlock.position.x - offset - 0.01;
           break;
         }
 
         if (this.velocity.x < 0) {
           this.velocity.x = 0;
+          const offset = this.hitbox.position.x - this.position.x;
           this.position.x =
-            collisionBlock.position.x + collisionBlock.width + 0.01;
+            collisionBlock.position.x + collisionBlock.width - offset + 0.01;
           break;
         }
       }
@@ -92,18 +124,23 @@ export class Player extends Sprite {
   checkForVerticalCollisions() {
     for (let i = 0; i < this.collisionBlocks.length; i++) {
       const collisionBlock = this.collisionBlocks[i];
-      if (collision(this, collisionBlock)) {
+      if (collision(this.hitbox, collisionBlock)) {
         console.log("we are colliding");
         if (this.velocity.y > 0) {
           this.velocity.y = 0;
-          this.position.y = collisionBlock.position.y - this.height - 0.01;
+          const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height;
+          this.position.y = collisionBlock.position.y - offset - 0.01;
           break;
         }
 
         if (this.velocity.y < 0) {
           this.velocity.y = 0;
+
+          const offset = this.hitbox.position.y - this.position.y;
+
           this.position.y =
-            collisionBlock.position.y + collisionBlock.height + 0.01;
+            collisionBlock.position.y + collisionBlock.height - offset + 0.01;
           break;
         }
       }
