@@ -67,6 +67,7 @@ export class Player extends Sprite {
     ) {
       return;
     }
+    this.currentFrame = 0;
     if (this.animations[key as keyof typeof this.animations].image) {
       this.image = this.animations[key as keyof typeof this.animations].image;
       this.frameBuffer =
