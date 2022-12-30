@@ -3,7 +3,7 @@ import { CanvasContext } from "./CanvasContext";
 
 export class Sprite {
   position: Position;
-  image: HTMLImageElement;
+  image: HTMLImageElement | undefined;
   width: number = 0;
   height: number = 0;
   frameRate: number;
@@ -11,6 +11,7 @@ export class Sprite {
   frameBuffer: number;
   elapsedFrames: number;
   scale: number;
+  loaded: boolean;
 
   canvasContext = CanvasContext.getInstance();
   canvas = this.canvasContext.canvas;
@@ -25,10 +26,14 @@ export class Sprite {
   }: ISprite) {
     this.position = position;
     this.scale = scale;
+    this.loaded = false;
     this.image = new Image();
     this.image.onload = () => {
-      this.width = (this.image.width / this.frameRate) * this.scale;
-      this.height = this.image.height * this.scale;
+      if (this.image) {
+        this.width = (this.image.width / this.frameRate) * this.scale;
+        this.height = this.image.height * this.scale;
+        this.loaded = true;
+      }
     };
     this.image.src = imageSrc;
     this.frameRate = frameRate;

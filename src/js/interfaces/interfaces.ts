@@ -24,3 +24,21 @@ export interface IObject {
   width: number;
   height: number;
 }
+
+export interface IAnimation {
+  imageSrc: string;
+  frameRate: number;
+  frameBuffer: number;
+  image?: HTMLImageElement;
+}
+
+export interface IAnimations {
+  Idle: IAnimation;
+  Run: IAnimation;
+  Jump: IAnimation;
+  Fall: IAnimation;
+  FallLeft: IAnimation;
+  RunLeft: IAnimation;
+  IdleLeft: IAnimation;
+  JumpLeft: IAnimation;
+}

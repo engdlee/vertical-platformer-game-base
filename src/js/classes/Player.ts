@@ -1,4 +1,9 @@
-import { IObject, Position, Velocity } from "../interfaces/interfaces";
+import {
+  IAnimations,
+  IObject,
+  Position,
+  Velocity,
+} from "../interfaces/interfaces";
 import { collision } from "../utils";
 import { CanvasContext } from "./CanvasContext";
 import { CollisionBlock } from "./CollisionBlock";
@@ -9,6 +14,8 @@ export class Player extends Sprite {
   velocity: Velocity;
   collisionBlocks: CollisionBlock[];
   hitbox: IObject;
+  animations: IAnimations;
+  lastDirection: string;
 
   canvasContext = CanvasContext.getInstance();
   canvas = this.canvasContext.canvas;
@@ -20,6 +27,7 @@ export class Player extends Sprite {
     collisionBlocks: CollisionBlock[],
     imageSrc: string,
     frameRate: number,
+    animations: IAnimations,
     scale = 0.5
   ) {
     super({ position, imageSrc, frameRate, scale });
@@ -38,11 +46,41 @@ export class Player extends Sprite {
       width: 10,
       height: 10,
     };
+
+    this.animations = animations;
+    this.lastDirection = "right";
+
+    for (let key in this.animations) {
+      const image = new Image();
+      image.src = this.animations[key as keyof typeof this.animations]
+        .imageSrc as string;
+
+      this.animations[key as keyof typeof this.animations].image = image;
+    }
+  }
+
+  switchSprite(key: string) {
+    if (
+      this.image ===
+        this.animations[key as keyof typeof this.animations].image ||
+      !this.loaded
+    ) {
+      return;
+    }
+    if (this.animations[key as keyof typeof this.animations].image) {
+      this.image = this.animations[key as keyof typeof this.animations].image;
+      this.frameBuffer =
+        this.animations[key as keyof typeof this.animations].frameBuffer;
+      this.frameRate =
+        this.animations[key as keyof typeof this.animations].frameRate;
+    }
   }
 
   update() {
     this.updateFrames();
     this.updateHitbox();
+
+    //for debugging
     if (this.c) {
       // draws the image
       this.c.fillStyle = "rgba(0, 255, 0, 0.2)";
@@ -53,7 +91,7 @@ export class Player extends Sprite {
         this.height
       );
 
-      // draws the hibox
+      // draws the hitbox
       this.c.fillStyle = "rgba(255, 0, 0, 0.2)";
       this.c.fillRect(
         this.hitbox.position.x,
@@ -117,8 +155,8 @@ export class Player extends Sprite {
   }
 
   applyGravity() {
-    this.position.y += this.velocity.y;
     this.velocity.y += this.gravity;
+    this.position.y += this.velocity.y;
   }
 
   checkForVerticalCollisions() {
