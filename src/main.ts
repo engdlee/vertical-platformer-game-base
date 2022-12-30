@@ -59,8 +59,8 @@ platformCollisions2D.forEach((row, y) => {
   });
 });
 
-const player = new Player({ x: 0, y: 0 });
-const player2 = new Player({ x: 0, y: 0 });
+const player = new Player({ x: 100, y: 0 }, collisionBlocks);
+// const player2 = new Player({ x: 0, y: 0 });
 
 const keys = {
   d: {
@@ -95,7 +95,6 @@ function animate() {
     platformCollisionBlocks.forEach((block) => {
       block.update();
     });
-    c.restore();
 
     player.update();
     player.velocity.x = 0;
@@ -105,6 +104,8 @@ function animate() {
     } else if (keys.a.pressed) {
       player.velocity.x = -5;
     }
+
+    c.restore();
   }
 }
 
@@ -119,7 +120,7 @@ window.addEventListener("keydown", (event) => {
       keys.a.pressed = true;
       break;
     case "w":
-      player.velocity.y = -15;
+      player.velocity.y = -8;
       break;
   }
 });
