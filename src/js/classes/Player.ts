@@ -138,41 +138,69 @@ export class Player extends Sprite {
     }
   }
 
+  shouldPanCameraDown(camera: { position: Position }) {
+    if (this.camerabox.position.y + this.velocity.y <= 0) {
+      return;
+    }
+
+    if (this.camerabox.position.y <= Math.abs(camera.position.y)) {
+      camera.position.y -= this.velocity.y;
+    }
+  }
+
+  shouldPanCameraUp(canvas: HTMLCanvasElement, camera: { position: Position }) {
+    if (
+      this.camerabox.position.y + this.camerabox.height + this.velocity.y >=
+      432
+    ) {
+      return;
+    }
+
+    const scaledCanvasHeight = canvas.height / 4;
+
+    if (
+      this.camerabox.position.y + this.camerabox.height >=
+      Math.abs(camera.position.y) + scaledCanvasHeight
+    ) {
+      camera.position.y -= this.velocity.y;
+    }
+  }
+
   update() {
     this.updateFrames();
     this.updateHitbox();
 
     this.updateCamerabox();
 
-    //for debugging
-    if (this.c) {
-      // draws the camera
-      this.c.fillStyle = "rgba(0, 0, 255, 0.2)";
-      this.c.fillRect(
-        this.camerabox.position.x,
-        this.camerabox.position.y,
-        this.camerabox.width,
-        this.camerabox.height
-      );
+    // //for debugging
+    // if (this.c) {
+    //   // draws the camera
+    //   this.c.fillStyle = "rgba(0, 0, 255, 0.2)";
+    //   this.c.fillRect(
+    //     this.camerabox.position.x,
+    //     this.camerabox.position.y,
+    //     this.camerabox.width,
+    //     this.camerabox.height
+    //   );
 
-      // draws the image
-      this.c.fillStyle = "rgba(0, 255, 0, 0.2)";
-      this.c.fillRect(
-        this.position.x,
-        this.position.y,
-        this.width,
-        this.height
-      );
+    //   // draws the image
+    //   this.c.fillStyle = "rgba(0, 255, 0, 0.2)";
+    //   this.c.fillRect(
+    //     this.position.x,
+    //     this.position.y,
+    //     this.width,
+    //     this.height
+    //   );
 
-      // draws the hitbox
-      this.c.fillStyle = "rgba(255, 0, 0, 0.2)";
-      this.c.fillRect(
-        this.hitbox.position.x,
-        this.hitbox.position.y,
-        this.hitbox.width,
-        this.hitbox.height
-      );
-    }
+    //   // draws the hitbox
+    //   this.c.fillStyle = "rgba(255, 0, 0, 0.2)";
+    //   this.c.fillRect(
+    //     this.hitbox.position.x,
+    //     this.hitbox.position.y,
+    //     this.hitbox.width,
+    //     this.hitbox.height
+    //   );
+    // }
     this.draw();
     this.position.x += this.velocity.x;
     this.updateHitbox();
