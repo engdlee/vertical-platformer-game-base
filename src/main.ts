@@ -28,7 +28,6 @@ const collisionBlocks: CollisionBlock[] = [];
 floorCollisions2D.forEach((row, y) => {
   row.forEach((symbol, x) => {
     if (symbol === 202) {
-      console.log("draw a block here!");
       collisionBlocks.push(
         new CollisionBlock({
           x: x * 16,
@@ -48,7 +47,6 @@ const platformCollisionBlocks: CollisionBlock[] = [];
 platformCollisions2D.forEach((row, y) => {
   row.forEach((symbol, x) => {
     if (symbol === 202) {
-      console.log("draw a block here!");
       platformCollisionBlocks.push(
         new CollisionBlock(
           {
@@ -197,7 +195,6 @@ function animate() {
         player.switchSprite("FallLeft");
       }
     }
-    console.log(player.velocity.y);
 
     c.restore();
   }

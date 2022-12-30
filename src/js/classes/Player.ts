@@ -264,7 +264,6 @@ export class Player extends Sprite {
     for (let i = 0; i < this.collisionBlocks.length; i++) {
       const collisionBlock = this.collisionBlocks[i];
       if (collision(this.hitbox, collisionBlock)) {
-        console.log("we are colliding");
         if (this.velocity.y > 0) {
           this.velocity.y = 0;
           const offset =
